@@ -1,6 +1,8 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import { NewsArticle, NewsResponse } from "../../../models/NewsArticles";
 import NewsArticlesGrid from "../../../components/NewsArticlesGrid";
+import { useRouter } from "next/router";
+import Head from "next/head";
 
 interface CategoryNewsPageProps {
     newsArticles: NewsArticle[],
@@ -24,14 +26,24 @@ export const getStaticProps: GetStaticProps<CategoryNewsPageProps> = async ({par
     
     const newsResponse: NewsResponse = await response.json()
     return {
-      props: {newsArticles: newsResponse.results}
+      props: {newsArticles: newsResponse.results},
+      revalidate: 5 * 60, // ISR - re-gerate the page at most every 5 mins (not on pageload)
     }
 }
 
 const CategoryNewsPage = ({ newsArticles }: CategoryNewsPageProps) => {
+    const router = useRouter();
+    const categoryName = router.query.category?.toString()
+
+    const title = 'Category: ' + categoryName
+    
     return ( 
     <>
+        <Head>
+            <title key='title'>{title}  - NextJS News App</title>
+        </Head>
         <main>
+            <h1>{title}</h1>
             <NewsArticlesGrid articles={newsArticles}/>
         </main>
     </> );
