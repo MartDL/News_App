@@ -1,9 +1,6 @@
 import Head from 'next/head'
-import Image from 'next/image'
-import styles from '@/styles/Home.module.css'
 import { GetServerSideProps } from 'next'
 import { NewsArticle, NewsResponse } from '../../models/NewsArticles'
-import NewsArticleEntry from '../../components/NewsArcticleEntry'
 import NewsArticlesGrid from '../../components/NewsArticlesGrid'
 
 interface BreakingNewsPageProps {
@@ -13,7 +10,7 @@ interface BreakingNewsPageProps {
 export const getServerSideProps: GetServerSideProps<BreakingNewsPageProps> = async () => {
   const response = await fetch('https://newsdata.io/api/1/news?apikey='+ process.env.NEWS_API_KEY )
   const newsResponse: NewsResponse = await response.json()
-  console.log('NEWS',newsResponse.results)
+  console.log('NEWS', newsResponse.results)
   return {
     props: {newsArticles: newsResponse.results}
   }
